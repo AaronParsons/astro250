@@ -73,6 +73,8 @@ def noise(telescope, bandwidth, intTime, wavelength):
     -----
     Maybe supposed to develop more of the variables used here?
 
+    Should incorporate in Telescope class.
+
     '''
 
     numSamp = bandwidth * intTime
