@@ -33,6 +33,42 @@ class Telescope:
     def setDependent(self):
 
         self.effArea = self.numAnt * self.areaDish * self.effAper
+    def noise(self, bandwidth, intTime, wavelength):
+        '''
+        Purpose
+        -------
+        This provides the expected noise level in Jansky of a telescope,
+        given the observing parameters and properties of the telescope. 
+
+        Inputs
+        ------
+        bandwidth: float
+            Bandwidth in Hz
+        intTime: float
+            Integration time in seconds
+
+        wavelength: 
+
+        Returns
+        -------
+        fluxDensityRMS: float
+            The rms in the flux density, in units of Janskys 
+
+
+        Notes
+        -----
+        Maybe supposed to develop more of the variables used here?
+
+        '''
+
+        numSamp = bandwidth * intTime
+        gain = (self.effArea / (2 * kb) ) * jansky
+
+        # comment here
+        rmsTemp = self.sysTemp / math.sqrt(numSamp)
+        rmsFluxDensity = rmsTemp / gain
+
+        return rmsFluxDensity
 
 class ATA(Telescope):
     def __init__(self):
@@ -43,47 +79,4 @@ class CARMA(Telescope):
     def __init__(self):
 
         Telescope.__init__()
-
-
-def noise(telescope, bandwidth, intTime, wavelength):
-    '''
-    Purpose
-    -------
-    This provides the expected noise level in Jansky of a telescope,
-    given the observing parameters and properties of the telescope. 
-
-    Inputs
-    ------
-    telescope: class
-        Specifications for a given telescope (beam size, number of antennae)
-    bandwidth: float
-        Bandwidth in Hz
-    intTime: float
-        Integration time in seconds
-
-    wavelength: 
-
-    Returns
-    -------
-    fluxDensityRMS: float
-        The rms in the flux density, in units of Janskys 
-
-
-    Notes
-    -----
-    Maybe supposed to develop more of the variables used here?
-
-    Should incorporate in Telescope class.
-
-    '''
-
-    numSamp = bandwidth * intTime
-    gain = (telescope.effArea / (2 * kb) ) * jansky
-
-    # comment here
-    rmsTemp = telescope.sysTemp / math.sqrt(numSamp)
-    rmsFluxDensity = rmsTemp / gain
-
-    return rmsFluxDensity
-
 
