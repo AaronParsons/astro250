@@ -80,6 +80,7 @@ def noise(telescope, bandwidth, intTime, wavelength):
     numSamp = bandwidth * intTime
     gain = (telescope.effArea / (2 * kb) ) * jansky
 
+    # comment here
     rmsTemp = telescope.sysTemp / math.sqrt(numSamp)
     rmsFluxDensity = rmsTemp / gain
 
