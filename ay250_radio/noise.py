@@ -21,7 +21,7 @@ class Telescope:
         self.setDependent()
 
     def setBasic(self):
-        self.beamSize = 0
+        self.beamSize = 1
         self.sysTemp = 100  # K
 
         # dish properties: number of antenna, area of each dish, 
@@ -33,7 +33,9 @@ class Telescope:
     def setDependent(self):
 
         self.effArea = self.numAnt * self.areaDish * self.effAper
-    def noise(self, bandwidth, intTime, wavelength):
+        self.gain = (self.effArea / (2 * kb) ) * jansky
+
+    def noise(self, bandwidth, intTime):
         '''
         Purpose
         -------
@@ -47,8 +49,6 @@ class Telescope:
         intTime: float
             Integration time in seconds
 
-        wavelength: 
-
         Returns
         -------
         fluxDensityRMS: float
@@ -57,16 +57,13 @@ class Telescope:
 
         Notes
         -----
-        Maybe supposed to develop more of the variables used here?
 
         '''
 
         numSamp = bandwidth * intTime
-        gain = (self.effArea / (2 * kb) ) * jansky
 
-        # comment here
         rmsTemp = self.sysTemp / math.sqrt(numSamp)
-        rmsFluxDensity = rmsTemp / gain
+        rmsFluxDensity = rmsTemp / self.gain
 
         return rmsFluxDensity
 
@@ -80,3 +77,7 @@ class CARMA(Telescope):
 
         Telescope.__init__()
 
+class Arecibo(Telescope):
+    def __init__(self):
+
+        Telescope.__init__()
