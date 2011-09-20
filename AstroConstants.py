@@ -51,7 +51,7 @@ parsec = au / arcsec              # cm
 minute = 60.                      # seconds
 hour   = 60. * 60.                # seconds
 day    = 8.64e4                   # seconds
-year   = 365.2425 * da            # seconds
+year   = 365.2425 * day           # seconds
 
 kGauss = 0.017202098950           # Gauss's constant for orbital
                                   # motion ... (kp)^2 = a^3
