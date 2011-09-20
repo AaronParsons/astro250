@@ -5,7 +5,7 @@
 
 # AstroConstants must be in path
 from AstroConstants import c, radEarth
-from math import sqrt
+from math import sqrt, pi
 
 from scipy import array
 
@@ -52,7 +52,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
     # we want the shortest path, so interested in range -pi to pi
     # given array design, this is surely unnecessary
-    if baselineCoordVector > pi:
+    if sqrt(sum(baselineCoordVector**2)) > pi:
         baselineCoordVector -= 2 * pi
     baselineVector = baselineCoordVector * radEarth
 
