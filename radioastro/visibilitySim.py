@@ -24,12 +24,11 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     antennaOneCoords: 1d array
         Two element array with the coordinates of the first antenna. 
         The units should be radians. The first element
-        is ra, the second is dec. Should be in decimal format.
+        is hour angle, the second is declination. Should be in decimal format.
     antennaTwoCoords: 1d array
         Same format as antennaOneCoords, but for the second antenna.
     sourceCoords: 1d array
         Same format as antennaOneCoords, but for the source.
-
 
     '''
 
