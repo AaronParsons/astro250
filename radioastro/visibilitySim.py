@@ -7,6 +7,8 @@
 from AstroConstants import c, radEarth
 from math import sqrt
 
+from scipy import array
+
 
 def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     '''
@@ -30,6 +32,13 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
 
     '''
+
+    # allow lists as inputs, but convert to arrays
+    # for simplicity, assume now that if one is a list, all are
+    if type(antennaOneCoords).__name__ == 'list':
+        antennaOneCoords = array(antennaOneCoords)
+        antennaTwoCoords = array(antennaTwoCoords)
+        sourceCoords = array(sourceCoords)
 
     # need to calculate the time delay
     baselineCoordVector = antennaOneCoords - antennaTwoCoords
