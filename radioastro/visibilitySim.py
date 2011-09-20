@@ -50,7 +50,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     
     # time delay given by dot product of baseline vector and
     # the unit vector in direction of signal
-    timeDelay = baselineVector * sourceUnitVector / c
+    timeDelay = sum(baselineVector * sourceUnitVector) / c
     phase = 2 * pi * timeDelay * frequency
 
     return phase
