@@ -35,6 +35,17 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     Works for test cases of zenith and horizon
 
 
+    Tests
+    -----
+    For a source on the horizon, and a wavelength that is twice the separation of
+    the dishes, the phase should be pi. 
+    >>> from AstroConstants import meter, radEarth, c
+    >>> separation = 1 * meter
+    >>> wavelength = 2 * separation
+    >>> angSep = separation / radEarth
+    >>> print visibilitySim.twoAntennae([-angSep / 2., 0], [angSep / 2., 0], [pi, 0], c / wavelength)
+    -3.14159265359
+
 
     '''
 
