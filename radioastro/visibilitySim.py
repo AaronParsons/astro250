@@ -30,7 +30,16 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     sourceCoords: 1d array
         Same format as antennaOneCoords, but for the source.
 
+    Notes
+    -----
+    Works for test cases of zenith and horizon
+
+
+
     '''
+
+    # TODO: eventually want input in ra instead of ha?
+    # TODO: eventaully want input in sexigesimal rather than decimal format?
 
     # allow lists as inputs, but convert to arrays
     # for simplicity, assume now that if one is a list, all are
