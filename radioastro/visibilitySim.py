@@ -7,7 +7,7 @@
 from AstroConstants import c, radEarth
 from math import sqrt, pi
 
-from scipy import array
+from scipy import array, exp
 
 
 def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
@@ -37,8 +37,8 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
     Tests
     -----
-    For a source on the horizon, and a wavelength that is twice the separation of
-    the dishes, the phase should be pi. 
+    For a source on the horizon, and a wavelength that is twice 
+    the separation of the dishes, the phase should be pi. 
     >>> from AstroConstants import meter, radEarth, c
     >>> separation = 1 * meter
     >>> wavelength = 2 * separation
@@ -79,7 +79,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     # time delay given by dot product of baseline vector and
     # the unit vector in direction of signal
     timeDelay = sum(baselineVector * sourceUnitVector) / c
-    phase = 2 * pi * timeDelay * frequency
+    phase = exp(-2 * pi * timeDelay * frequency * 1j)
 
     return phase
 
