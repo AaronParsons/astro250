@@ -83,3 +83,31 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
     return phase
 
+def manyAntenna(antennaCoords, sourceCoords, frequency):
+    '''
+    Purpose
+    -------
+    Generalize visibility simulation to allow for many antenna. 
+
+
+    Inputs
+    ------
+    antennaCoords: 2d array
+        Should have dimensions of (3 x [# of antenna]), where
+        [# of antenna] can be any value
+    sourceCoords: 2d array
+        Should have dimensions of (3 x [# of sources]), where
+        [# of sources] can be any value
+    frequency: 1d array
+        Array of frequencies. These frequencies are assumed to be the
+        same for all sources.
+    '''
+
+    # will have N * (N - 1) / 2 delays, where N is [# of antenna]
+    # if M is number of sources, each with a delay, there are then
+    # M * N * (N - 1) / 2 total delays to be recorded
+    # Delay is a function of frequency, so each frequency channel has
+    # its own delay
+
+
+
