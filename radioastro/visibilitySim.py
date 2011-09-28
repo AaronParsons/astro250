@@ -73,7 +73,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
     # given array design, this is surely unnecessary
     if sqrt(sum(baselineCoordVector**2)) > pi:
         baselineCoordVector -= 2 * pi
-    baselineVector = baselineCoordVector * radEarth
+    baselineVector = baselineCoordVector # * radEarth
 
     
     # time delay given by dot product of baseline vector and
@@ -155,6 +155,8 @@ def manyAntennae(antennaeCoords, sourceCoords, frequency):
 
     phases = zeros([numSources, numAntennae, numAntennae, numChannels], 
             dtype = 'complex')
+    useful = zeros([numAntennae, numAntennae],
+            dtype = 'bool')
     
     # will be able to cut down on this by at least that factor of redundant
     # and zero value indices
@@ -168,8 +170,9 @@ def manyAntennae(antennaeCoords, sourceCoords, frequency):
                         antennaeCoords[k, :],
                         sourceCoords[i, :],
                         frequency)
+                useful[j, k] = True
 
-    return phases
+    return phases, useful
 
 
 
