@@ -83,7 +83,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
     return phase
 
-def manyAntenna(antennaCoords, sourceCoords, frequency):
+def manyAntenna(antennaeCoords, sourceCoords, frequency):
     '''
     Purpose
     -------
@@ -93,21 +93,71 @@ def manyAntenna(antennaCoords, sourceCoords, frequency):
     Inputs
     ------
     antennaCoords: 2d array
-        Should have dimensions of (3 x [# of antenna]), where
-        [# of antenna] can be any value
+        Should have dimensions of (3 x [# of antennae]), where
+        [# of antennae] can be any value
     sourceCoords: 2d array
         Should have dimensions of (3 x [# of sources]), where
         [# of sources] can be any value
+        One source is fine, as long as the input is a 2d array
+        of shape [3 x 1]
     frequency: 1d array
         Array of frequencies. These frequencies are assumed to be the
         same for all sources.
+
+
+    Notes
+    -----
+    This is going to be seriously memory limited
+    for 10 antennae, 1000 sources, and 1000 frequency channels, this
+    is creating an array with 10**8 elements. Perhaps this
+    approach is not viable?
     '''
 
-    # will have N * (N - 1) / 2 delays, where N is [# of antenna]
+    # will have N * (N - 1) / 2 delays, where N is [# of antennae]
     # if M is number of sources, each with a delay, there are then
     # M * N * (N - 1) / 2 total delays to be recorded
     # Delay is a function of frequency, so each frequency channel has
     # its own delay
+
+    # the phases can be stored in a 4D array 
+    #
+    # for a single source and a single frequency, the phases at 
+    # each element will be stored in a 2d array, arranged as follows:
+    #           ant_1    ant_2    ....  ....    ant_n
+    # ant_1 [[      0     x_12    ....  ....     x_1n  ]
+    # ant_2  [  x_12*        0    ....  ....     x_2n  ]
+    #     .  [                                         ]
+    #     .  [                                         ]
+    # ant_n  [  x_1n*    x_2n*    ....  ....        0  ]]
+
+    # NOTE: for N antennae, N^2 - (N * (N + 1) / 2) values are
+    #       unneeded, as there are N zeroes, and (N * (N - 1) / 2) 
+    #       complex conjugates
+
+    # for each source and frequency, there will be an array ordered
+    # in this way, leading to a total of 4d
+    
+    
+    # want first dimension to be coordinates 
+    # for antennaeCoords and sourceCoords
+    numDimensions = 3
+    assert antennaeCoords.shape[0] == numDimensions, \
+            'Antennae coordinates should have dimensions (3 x [# of antennae])'
+    assert sourceCoords.shape[0] == numDimensions, \
+            'Source coordinates should have dimensions (3 x [# of sources])'
+
+    # if this passes, assume the second dimension is # of antenna, # of sources
+    # NOTE: for the case of 3 antennae, this test is useless
+
+    numAntennae = antennaeCoords.shape[1]
+    numSources = antennaeCoords.shape[1]
+    numChannels = len(frequency)
+
+    visibilities = zeros([numAntennae, numAntennae, numSources, numChannels])
+    
+
+
+
 
 
 
