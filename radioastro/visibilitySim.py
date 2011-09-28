@@ -7,7 +7,7 @@
 from AstroConstants import c, radEarth
 from math import sqrt, pi
 
-from scipy import array, exp
+from scipy import array, exp, zeros
 
 
 def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
@@ -83,7 +83,7 @@ def twoAntennae(antennaOneCoords, antennaTwoCoords, sourceCoords, frequency):
 
     return phase
 
-def manyAntenna(antennaeCoords, sourceCoords, frequency):
+def manyAntennae(antennaeCoords, sourceCoords, frequency):
     '''
     Purpose
     -------
@@ -93,13 +93,13 @@ def manyAntenna(antennaeCoords, sourceCoords, frequency):
     Inputs
     ------
     antennaCoords: 2d array
-        Should have dimensions of (3 x [# of antennae]), where
+        Should have dimensions of ([# of antennae] x 3), where
         [# of antennae] can be any value
     sourceCoords: 2d array
-        Should have dimensions of (3 x [# of sources]), where
+        Should have dimensions of ([# of sources] x 3), where
         [# of sources] can be any value
         One source is fine, as long as the input is a 2d array
-        of shape [3 x 1]
+        of shape [1 x 3]
     frequency: 1d array
         Array of frequencies. These frequencies are assumed to be the
         same for all sources.
@@ -141,23 +141,33 @@ def manyAntenna(antennaeCoords, sourceCoords, frequency):
     # want first dimension to be coordinates 
     # for antennaeCoords and sourceCoords
     numDimensions = 3
-    assert antennaeCoords.shape[0] == numDimensions, \
-            'Antennae coordinates should have dimensions (3 x [# of antennae])'
-    assert sourceCoords.shape[0] == numDimensions, \
-            'Source coordinates should have dimensions (3 x [# of sources])'
+    assert antennaeCoords.shape[1] == numDimensions, \
+            'Antennae coordinates should have dimensions ([# of antennae] x 3)'
+    assert sourceCoords.shape[1] == numDimensions, \
+            'Source coordinates should have dimensions ([# of sources] x 3)'
 
     # if this passes, assume the second dimension is # of antenna, # of sources
     # NOTE: for the case of 3 antennae, this test is useless
 
-    numAntennae = antennaeCoords.shape[1]
-    numSources = antennaeCoords.shape[1]
+    numAntennae = antennaeCoords.shape[0]
+    numSources = sourceCoords.shape[0]
     numChannels = len(frequency)
 
-    visibilities = zeros([numAntennae, numAntennae, numSources, numChannels])
+    phases = zeros([numSources, numAntennae, numAntennae, numChannels], 
+            dtype = 'complex')
     
+    # will be able to cut down on this by at least that factor of redundant
+    # and zero value indices
+    for i in xrange(numSources):
+        for j in xrange(numAntennae):
+            for k in xrange(numAntennae):
+                phases[i, j, k, :] = twoAntennae(
+                        antennaeCoords[j, :],
+                        antennaeCoords[k, :],
+                        sourceCoords[i, :],
+                        frequency)
 
-
-
+    return phases
 
 
 
