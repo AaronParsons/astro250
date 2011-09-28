@@ -160,7 +160,9 @@ def manyAntennae(antennaeCoords, sourceCoords, frequency):
     # and zero value indices
     for i in xrange(numSources):
         for j in xrange(numAntennae):
-            for k in xrange(numAntennae):
+            # starting at j + 1 because we know the answer already
+            # when k = j, and k < j is not unique (complex conjugate)
+            for k in xrange(j + 1, numAntennae):
                 phases[i, j, k, :] = twoAntennae(
                         antennaeCoords[j, :],
                         antennaeCoords[k, :],
