@@ -1,0 +1,23 @@
+V^2 = 4k_b T B R
+T = 300k
+R=50 ohm
+B=550MHz
+V^2 = 4*boltzman constant*300 kelvin*550MHz*50 ohms
+V_in^2 = 21*10^-6 V
+Want V_out = 1mV
+need a gain of
+G = 10 log_10 (V_out/V_in) = 10 log_10((1mV)^2/[4*boltzman constant*300 kelvin*550MHz*50 ohms]) \approx 33 dB
+Need 33dB of gain 
+AP1309C
+AP 
+12+24dB = 36dB
+
+Heat up using 2W
+P = 2W
+A \approx 5 cm^2
+\epsilon \approx 1
+P=A \epsilon \sigma T^4
+(2W/(5cm^2*1*stefan's constant))^(1/4)
+
+
+
