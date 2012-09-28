@@ -57,7 +57,7 @@ kGauss = 0.017202098950           # Gauss's constant for orbital
                                   # motion ... (kp)^2 = a^3
                                                                     
 lumSun    = 3.826e33              # erg/s
-massSun   = 1.9891e3              # gm
+massSun   = 1.9891e33             # gm
 radSun    = 6.9598e10             # cm
 tempSun   = 5770.0                # kelvin
 vMagSun   = -26.74                # apparent V mag of sun
