@@ -64,6 +64,8 @@ def test_radiometer_eqn(Ns, T_sys):
     pl.title(r'Testing the radiometer equation, assuming $T_\mathrm{sys}$ = %d K' %T_sys)
     pl.savefig('radiometer_sigmaT.png')
     
+    return 
+    
 if __name__ == '__main__':
     
     
