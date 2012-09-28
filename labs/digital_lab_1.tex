@@ -78,28 +78,43 @@ in your class Git repository.  You'll add to named directory the file ``van\_vle
 
 \section{Sampling and Aliasing}
 
+\subsection{Starting Your ROACH}
+
+Transfer the *.bof file in the class repository over to the ROACH as before,
+and run it.  Make sure the sample clock to the ADC is set to 200 MHz, and is
+on before you program the FPGA.  FPGAs behave very erratically if they aren't
+clocked properly; if you program the FPGA and then turn on the clock, you may
+see gibberish, or even nearly-correct behavior that occasionally goes whacky.
+Also check that you have attached anoise signal into the ADC, so that you get
+something interesting in your BRAM.  
+
 \subsection{Running the Design}
 
-Transfer the *.bof file in the class repository over to the ROACH as before, and run it
-.  Make sure the sample clock
-to the ADC is set to 200 MHz, and is on before you program the FPGA.  FPGAs behave very erratically if they aren't
-clocked properly; if you program the FPGA and then turn on the clock, you may see gibberish, or even nearly-correct
-behavior that occasionally goes whacky.  Also check that you have attached anoise signal into the ADC, so that you get something interesting in your BRAM.  
-You can now write appropriate
-values to "trig" to initiate a data capture.  You can use hd to look at values i
-n "data\_bram" and make sure things
-make sense.  When you are happy with the contents of the BRAM, use your account 
-at the lab to scp the contents of the
-BRAM to a computer with IDL:\begin{verbatim}
-$ scp root@10.32.92.113:/proc/PID/hw/ioreg/data_bram .\end{verbatim}
-
+You can now write appropriate values to "trig" to initiate a data capture.  You
+can use ``hd'' to look at values in "data\_bram" and make sure things make sense.
+When you are happy with the contents of the BRAM, you can scp the file over to
+another computer, freeing up the ROACH for someone else.
 
 \subsection{Sampling a Tone}
+\begin{itemize}
+\item use the quad-ADC attached to the ROACH to sample input tones at 200 MHz.
+\item capture data for three tone
+frequencies: one that has dozens of samples per period, one that is 10\% below the Nyquist frequency,
+and one that is 10\% above the Nyquist frequency.
+\item write a python program (plot\_adc\_samples.py) that plots the data as it sits in binary format
+in the file.  You might want to take a look at the ``struct'' module.  Try your best to set the time
+axis with proper units.
+\end{itemize}
 
 \subsection{Sampling Band-limited Noise}
+\begin{itemize}
+
+\section{Compu-Acting}
+
+In this class activity, we'll act like various processors.  Fun.
 
 \section{Quantization Power Transfer}
 
-\section{Compu-Acting}
+\item write code in van\_vleck.py that plots the power transfer curves for 1, 2, 4, and 8-bit sampling.
 
 \end{document}
