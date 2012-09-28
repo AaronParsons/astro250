@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Analog Lab 3}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item Central Limit Theorem
+\item Johnson-Nyquist Noise
+\item Receiver Temperature
+\item Radiometer Equation
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item 2W 50$\Omega$ resistor
+\item power supply
+\item oscilloscope w/ probes
+\item minicircuits amplifiers
+\item voltimeter
+\item infrared (remote) thermometer
+\end{itemize}
+
+\section*{Some Thoughts}
+
+\subsection*{Minicircuits Amplifiers}
+
+Now that you've built your own amplifier, you have a feel for what goes on inside an amplifier.  We're
+now going to use pre-packaged amplifiers that are commercially available (Minicircuits is a typical vendor).
+These will be SMA in, SMA out, with two leads for $V_{cc}$ (+15V, for the parts we're using) and ground.
+These amplifiers specify their gain in dB, and you do have to be a bit careful about signal levels.
+As a general rule, the output of amplifiers should be connected (to a 50$\Omega$ load) before they are
+powered on, so that they don't have to dissipate their output power internally.
+
+\subsection*{Infrared Thermometer}
+
+If you assume that objects radiate heat as a blackbodies (which we'll discuss in later labs), you
+can measure their temperature remotely just by their infrared radiation.  The infrared thermometer
+we will use in this lab is an infrared telescope (with a well-defined beam size) that is
+calibrated to output a voltage in mV that is the temperature in Fahrenheit.  Use it wisely.
+
+\subsection*{Interference}
+
+In this lab, we're going to attempt to make a relatively sensitive measurement of the Johnson
+noise on a 50$\Omega$ resistor.  It turns out that lots of things can produce signals at this 
+level that can interfere with your measurement.  For one, if you make a loop that electrons can
+flow around (which, after all, is what a circuit is), then a changing magnetic flux through that
+loop produces an EMF that drives a current that sets up a voltage across the resistor.  This may
+be the very first radio antenna we build in this class.  Unfortunately, that's not what we were
+going for, so we need ways to avoid this.  Since the area inside the loop matters, you can try to
+make your circuits physically narrow.  You might also try making a Faraday cage.
+
+\subsection*{Writing Code for Lab}
+
+This is the first lab where a significant portion of the lab is writing code.  We are going to keep
+everyone's code in a class Git repository.  So the first thing you should do set up a github
+account and fork the class repo: \url{https://github.com/AaronParsons/astro250.git} .
+Next, clone your repo onto your computer.  (If you haven't yet, you should get Git, Python, Numpy,
+and Pylab installed on your computer).  Inside astro250, add a directory with your name, and create
+two files: central\_limit.py and radiometer\_test.py.  Commit, and push your changes back up to
+your github account.  I'll pull your fork of astro250 into
+my repo, along with everyone else's work.  From time to time, you should pull from my repo (you
+can add a shorthand for it to your working copy on your computer with {\it git remote add ...})
+so you can see what everyone else is doing, too.
+
+\section{Calculating the Noise Figure of a Reciever}
+
+\subsection*{Determine Amount of Gain Needed}
+\begin{itemize}
+\item Calculate how much amplification is needed to bring the Johnson noise on a $50\Omega$ resistor
+up to at least the $\sim$1mV RMS level that you can measure on a scope.  You'll have to pick an appropriate
+bandwidth, and you might want to check that you can get a filter that supplies that bandwidth. 
+\item Looking at the data sheets for the minicircuits amplifiers, choose a number of gain stages.
+\item Connect the gain stages (and the filter at the end), and power them at +15V.  IMPORTANT: Most amplifiers
+want to have the output connected first, so that the output power has some place to go.
+\end{itemize}
+
+
+\subsection*{Estimate and Measure the Resistor Temperature}
+\begin{equation}
+P=A\epsilon \sigma T^4
+\end{equation}
+\begin{itemize}
+\item Set a power supply to the appropriate voltage to dissipate $\sim$2W in a 50$\Omega$ resistor (make
+sure it is a beefy resistor rated to 2W, and do not exceed that threshold, or meltdown will ensue).
+\item Using the Stefan-Boltzmann Law, calculate what temperature you think the resistor will hit.
+\item Use an infrared thermometer to measure the temperature.  Were you close?
+\end{itemize}
+
+\subsection*{Measure the Noise Figure}
+\begin{itemize}
+\item Determine the power out of the receiver for the input resistor at room temperature.  Ideally, you'd do this
+with a power meter or a spectrum analyzer, but today, we'll do the poor man's method of eyeballing one
+standard deviation from the mean on an oscilloscope.  This isn't easy, and I apologize for that.  To keep your
+sanity, you should estimate errorbars on this measurement, so you can see the effect of error on
+your bottom line.
+\item As in the previous step, set the resistor dissipating 2W, and measure the power out of the receiver.
+IMPORTANT: Use a blocking cap to prevent a large DC voltage from entering the amplifier chain.  Otherwise, you
+could damage your amplifiers.  When in doubt, ask.
+\item Since you already know the temperature the resistor hits when dissipating 2W, you should be able to
+solve for the gain and the receiver temperature (and if you want, you can calculate your Y factor).  This
+would be a good time to use your error bars to determine your confidence interval on your measurement
+of the gain and receiver temperature.  Make a plot and draw some lines!
+\item Convert your receiver temperature to a noise figure.
+\item How much is your error on the reciever temperature reduced if you have a prior on the gain (which
+you should look up from the data sheet)?
+\item How does your measured receiver temperature compare to the noise temperature you'd expect given
+your chain of amplifiers? 
+\end{itemize}
+
+\section{Demonstrate the Central Limit Theorem}
+\begin{itemize}
+\item Write a program (in the central\_limit.py file that you created in the astro250 repo under your name)
+that shows that, in the large-N limit, adding samples drawn from non-Gaussian random
+distributions converges to a Gaussian distribution.
+\item Also show that the standard deviation of the mean of $N$ Gaussian-random samples decreases as $\sqrt{N}$.
+If you are trying to characterize samples of an unknown character to show that they are noise-like, this
+is called an Allen variance test.
+\end{itemize}
+
+\section{Numerical Demonstration of the Radiometer Equation}
+\begin{itemize}
+\item Write a program (in the radiometer\_test.py file in the astro250 repo under your name) that simulates 
+random noise corresponding to a noise temperature, and shows that the radiometer equation works.  In particular,
+prove (numerically) that it is, in fact, $\sqrt{Bt}$ and not $\sqrt{2BT}$ in the denominator of the
+radiometer equation.
+\end{itemize}
+
+\end{document}
