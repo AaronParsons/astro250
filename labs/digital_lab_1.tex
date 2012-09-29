@@ -74,7 +74,7 @@ SMA port marked ``clk''.  Happy sampling.
 \subsection*{Writing Code for Lab}
 
 As last week, please put the code you develop for this lab
-in your class Git repository.  You'll add to named directory the file ``van\_vleck.py''.
+in your class Git repository.  You'll add to named directory the files ``van\_vleck.py''.
 
 \section{Sampling and Aliasing}
 
@@ -101,13 +101,24 @@ another computer, freeing up the ROACH for someone else.
 \item capture data for three tone
 frequencies: one that has dozens of samples per period, one that is 10\% below the Nyquist frequency,
 and one that is 10\% above the Nyquist frequency.
+\item predict the frequencies you expect for these tones after you sample them.
 \item write a python program (plot\_adc\_samples.py) that plots the data as it sits in binary format
 in the file.  You might want to take a look at the ``struct'' module.  Try your best to set the time
 axis with proper units.
+\item measure the frequencies of the various tones, and compare them to your predictions.
 \end{itemize}
 
 \subsection{Sampling Band-limited Noise}
 \begin{itemize}
+\item use low-pass and band-pass filters to inject noise (your amplifier chains from the previous
+lab are great noise sources) into the first and second nyquist zones of your digitizer.  Since there
+may be only a limited selection of filters available, it may be easier change your sampling
+frequency to match your filter.
+\item capture the data and plot the (aliased) spectrum for each case.  Again, try your best to get your
+frequency units right.  Put your plotting script in your repo under plot\_adc\_
+\item transpose the measured spectrum up to the original frequency.  Compare features to what you expect
+given your choice of filters.
+\end{itemize}
 
 \section{Compu-Acting}
 
@@ -115,6 +126,8 @@ In this class activity, we'll act like various processors.  Fun.
 
 \section{Quantization Power Transfer}
 
+\begin{itemize}
 \item write code in van\_vleck.py that plots the power transfer curves for 1, 2, 4, and 8-bit sampling.
+\end{itemize}
 
 \end{document}
