@@ -19,6 +19,10 @@ def test_CLT(Ns, host_dist, scale=0., loc=1., interactive=True):
     @param loc: the loc keyword to pass to the host_dist function (float)
     @param interactive: plot the sample distributions interactively (boolean) 
     """
+    # ARP: love the doxygen docstring
+    # ARP: I like that you put the bulk of your code in a reusable function,
+    # ARP: but I think you'll find your function to be more reusable if you separate the math and the plotting
+    # ARP: into separate functions
 
     # set up the figure showing the histogram
     fig1 = pl.figure()
@@ -26,6 +30,7 @@ def test_CLT(Ns, host_dist, scale=0., loc=1., interactive=True):
     
     if interactive:
         pl.ion() # make pylab interactive
+        # ARP: I enjoyed the animation
         
         # label the axes
         ax1.set_xlabel("sample averages", fontsize=16)
@@ -79,7 +84,7 @@ def test_CLT(Ns, host_dist, scale=0., loc=1., interactive=True):
     ax2 = fig2.gca()
 
     ax2.scatter(Ns, std_devs, color='k')
-    ax2.plot(Ns, sigma/np.sqrt(Ns), c='k')
+    ax2.plot(Ns, sigma/np.sqrt(Ns), c='k') # ARP: this plot shows your prediction & measurement well, but could be loglog to facilitate interpretation
 
     # label the axes
     ax2.set_xlabel("sample size N", fontsize=16)
@@ -89,6 +94,8 @@ def test_CLT(Ns, host_dist, scale=0., loc=1., interactive=True):
     return
 
 if __name__ == '__main__':
+    # ARP: I'm a big fan of separating resuable code from what runs on the command line, as you do here
+    # ARP: Don't know if you know about the optparse module for a quick way to whip up a command line interface.
     
     
     Ns = np.linspace(1, 200, 25)  # these are the sample sizes (the usual 'N')
