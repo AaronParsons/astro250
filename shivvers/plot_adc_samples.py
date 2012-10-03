@@ -7,7 +7,7 @@ import struct
 import numpy as np
 import matplotlib.pyplot as plt
 
-# open files
+# open files as signed 32-bit integers
 bram_str = open('bram_files/data_bram_10MHz','r').read()
 data10 = struct.unpack('{}i'.format(len(bram_str)/4), bram_str)
 
@@ -25,10 +25,11 @@ ax.plot(x[:100], data10[:100], label='10MHz')
 ax.plot(x[:100], data90[:100], label='90MHz')
 ax.plot(x[:100], data110[:100], label='110MHz')
 ax.set_xlabel('time (s)')
+plt.title('Three signals sampled at 200MHz')
 ax.set_yticklabels([])
 plt.legend()
 
-# do a fft and plot periodograms
+# do a fft and make periodograms
 n = len(data10)
 freq = np.fft.fftfreq(n, 5e-6)[:n/2] #include nyquist cutoff
 
@@ -52,7 +53,8 @@ labels = ['10MHz', '90MHz', '110MHz']
 for i,ax in enumerate(axs):
     ax.set_yticklabels([])
     ax.set_ylabel( labels[i] )
-axs[2].set_xlabel( 'Frequency' )
+axs[2].set_xlabel( 'Frequency (Hz)' )
+axs[0].set_title('Periodograms of three signals')
 plt.show()
 
 
