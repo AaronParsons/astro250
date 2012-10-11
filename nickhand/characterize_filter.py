@@ -49,7 +49,7 @@ def fitFilter(x, y, model='gaussian', bandpass=100):
         
     # measure the amplitude
     p0 = [4, 1/bandpass]
-    fa = {'x': x, 'y': y, 'err': y*0.3}
+    fa = {'x': x, 'y': y, 'err': y*0.1}
 
     m = mpfit.mpfit(fittingFunction, p0, functkw=fa)
     A, B = m.params[0], m.params[1]
