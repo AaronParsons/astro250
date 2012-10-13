@@ -64,16 +64,6 @@ class ROACHInterface(object):
         f.close()
 
         return data
-        
-    def read_ddc_bram(self):
-        """
-        @brief read the data from the ddc_bram file
-        """
-        f = open(self.ddc_bram)
-        data = f.read()
-        f.close()
-
-        return data
 
   
 class transmitUDP(object):
