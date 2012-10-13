@@ -60,8 +60,8 @@ if __name__ == '__main__':
     
     # parse the input arguments
     parser = argparse.ArgumentParser(description="charactize digital filter for input signal")
-    parser.add_argument('signal_file', type=str, help='name of file containing convolved signal')
-    parser.add_argument('convolved_file', type=str, help='name of file containing true input signal')
+    parser.add_argument('signal_file', type=str, help='name of file containing true input signal')
+    parser.add_argument('convolved_file', type=str, help='name of file containing convolved signal')
     parser.add_argument('--dt', type=float, default=5e-9, help='timestep of data file')
     parser.add_argument('--keepDC', action='store_false', help='do not remove DC bias from input signal')
     parser.add_argument('--smoothing', type=int, default=0, help='kernel of gaussian smoothing function to apply to power spectra')
@@ -70,9 +70,9 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    # read in the data
-    t_conv, d_conv = digital_utils.read_bram(args.convolved_file, timestep=args.dt)
-    t_true, d_true = digital_utils.read_bram(args.signal_file, timestep=args.dt)
+    # proces the data from the convolved and true input signal files
+    t_conv, d_conv = digital_utils.process_data_bram(args.convolved_file, timestep=args.dt)
+    t_true, d_true = digital_utils.process_data_bram(args.signal_file, timestep=args.dt)
     
     # get the power spectra
     f_conv, p_conv = digital_utils.power(d_conv, args.dt, smoothing=args.smoothing, keepDC=args.keepDC)
