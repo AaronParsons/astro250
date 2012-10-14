@@ -116,8 +116,9 @@ class transmitUDP(object):
                 # send the data in packets of size packetSize
                 lo = 0
                 while lo < len(output):
-                    hi = min(lo+packetSize, len(output-1))
-                        
+                    
+                    hi = min(lo+packetSize, len(output))
+                      
                     # sleep for 10 ms so we don't send data too fast
                     time.sleep(1e-2) 
                         
