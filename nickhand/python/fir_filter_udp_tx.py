@@ -5,7 +5,7 @@
 #  Created by Nick Hand on 2012-10-12.
 # 
 import socket, time, struct
-import optparse, sys, digital_utils
+import optparse, sys
 
 class ROACHInterface(object):
     """
@@ -38,7 +38,8 @@ class ROACHInterface(object):
         """
         
         # compute the int corresponding to desired LOF
-        lof_int = digital_utils.compute_lof_int(f_MHz, clk_MHz, freq_bits)
+        lof_int = int(f_MHz / clk_MHz * 2**freq_bits)
+        
         f = open(self.lo_path, 'w')
         f.write(struct.pack('>I', val))
         f.close()  
