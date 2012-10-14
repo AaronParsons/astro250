@@ -19,12 +19,12 @@ class ROACHInterface(object):
        running BOF file on the ROACH (int)
        """ 
         
-        self.path      = "/proc/%d/hw/ioreg/" %pid
-        self.data_bram = self.path + 'data_bram'
-        self.ddc_bram  = self.path + 'ddc_bram'
-        self.ddc_addr  = self.path + 'ddc_addr'
-        self.lo_path   = self.path + 'freq' 
-        self.trig_path = self.path + 'trig'
+       self.path      = "/Users/Nick/proc/%d/hw/ioreg/" %pid
+       self.data_bram = self.path + 'data_bram'
+       self.ddc_bram  = self.path + 'ddc_bram'
+       self.ddc_addr  = self.path + 'ddc_addr'
+       self.lo_path   = self.path + 'freq' 
+       self.trig_path = self.path + 'trig'
      
      
     def set_lof(self, f_MHz, clk_MHz=200., freq_bits=10):
@@ -85,9 +85,9 @@ class transmitUDP(object):
         self.host = host
         self.port = port
            
-    def send_data_bram(self, continuous=False):
+    def send_data_bram(self):
         """
-        @brief transmit the data from the data_bram file
+        @brief transmit continuously the data from the data_bram file
         
         @param continuous: whether to continually send the contents 
         of the file (bool)
@@ -98,35 +98,33 @@ class transmitUDP(object):
         
         # make sure we always close the socket if something crashes
         try: 
+            # bytes per packet to send, since all of data_bram is too much for one packet
+            packetSize=4096 
             
-            if continuous:
-                while True:
+            # read and send data continuously
+            while True:
                     
-                    # trigger the data bram
-                    self.ri.trig_data_bram()
-            
-                    # wait 1 ms for data to fill up (is this needed?)
-                    time.sleep(1e-3)
-            
-                    # read the data bram file
-                    output = self.ri.read_data_bram()
-            
-                    # send the data
-                    sock.send(output)
-            
-            else:
-                
                 # trigger the data bram
                 self.ri.trig_data_bram()
-        
-                # wait 1 ms for data to fill up (is this needed?)
-                time.sleep(1e-3)
-        
+            
+                # wait 10 ms for data to fill up (is this needed?)
+                time.sleep(1e-2)
+            
                 # read the data bram file
                 output = self.ri.read_data_bram()
-        
-                # send the data
-                sock.send(output)               
+            
+                # send the data in packets of size packetSize
+                lo = 0
+                while lo < len(output):
+                    hi = min(lo+packetSize, len(output-1))
+                        
+                    # sleep for 10 ms so we don't send data too fast
+                    time.sleep(1e-2) 
+                        
+                    # send the data packet
+                    sock.send(output[lo:hi])
+                        
+                    lo += packetSize
         except:
             raise
         finally:
@@ -140,7 +138,6 @@ class transmitUDP(object):
         
         @param wordlength: bytes per value (int)
         """
-        
         # open the ddc data/address files
         f_data = open(self.ri.ddc_bram)
         f_addr = open(self.ri.ddc_addr)
@@ -164,7 +161,7 @@ class transmitUDP(object):
                 new_addr = struct.unpack('>i', new_addr)[0]
                 
                 # check if there is overfill back to address 0
-                if new_addr >= old_addr:
+                if new_addr > old_addr:
                     
                     bytesToRead = wordlength*(new_addr - old_addr)
                     output = f_data.read(bytesToRead)

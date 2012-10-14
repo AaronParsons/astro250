@@ -82,7 +82,7 @@ def process_data_bram(filename, timestep=5e-9, data=None):
     # the corresponding times for each sample
     times = np.arange(0, N_samps*timestep, timestep )
         
-    return times, data
+    return times, np.array(data)
 
 def power(signal, timestep, smoothing=0, keepDC=False):
     """
@@ -115,7 +115,8 @@ def power(signal, timestep, smoothing=0, keepDC=False):
         power = gaussian_filter1d(power, smoothing)
         
     # return the shifted frequency and power array
-    return np.fft.fftshift(freqs), np.fft.fftshift(power)       
-    
+    freqs, power = np.fft.fftshift(freqs), np.fft.fftshift(power)       
+
+    return freqs, power
     
     
