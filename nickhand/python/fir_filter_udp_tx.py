@@ -19,7 +19,7 @@ class ROACHInterface(object):
        running BOF file on the ROACH (int)
        """ 
         
-       self.path      = "/Users/Nick/proc/%d/hw/ioreg/" %pid
+       self.path      = "/proc/%d/hw/ioreg/" %pid
        self.data_bram = self.path + 'data_bram'
        self.ddc_bram  = self.path + 'ddc_bram'
        self.ddc_addr  = self.path + 'ddc_addr'
