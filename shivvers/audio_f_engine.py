@@ -4,7 +4,7 @@ Real-time sender of audio data.
 
 
 import numpy as np
-import struct, socket
+import socket, struct
 import pyaudio as pa
 from time import time
 
@@ -16,7 +16,7 @@ class audio_in_and_out():
     packet format:
      4 bytes: antenna ID (uint)
      4 bytes: timestamp (uint)
-     rest: data
+     rest: FFT(data)
     
     '''
     def __init__(self, port=12345, host='127.0.0.1'):
@@ -31,6 +31,7 @@ class audio_in_and_out():
         self.CHANNELS = 1
         self.RATE = 44100
         self.p = pa.PyAudio()
+        self.count = 0
         
         # define ID for later correlations
         self.ID = 11
@@ -38,7 +39,6 @@ class audio_in_and_out():
     def listen_forever(self):
         ''' main function '''
         t_start = t_prev = time()
-        count = 0
         while True:
             stream = self.p.open(format = self.FORMAT,
                                     channels = self.CHANNELS,
@@ -48,14 +48,17 @@ class audio_in_and_out():
             d = np.frombuffer(stream.read(self.chunk), dtype='int16')
             stream.close()
             time_int = int(time()%100 * 100) # send timestamp in 1/100's of a second
-            dat = np.hstack( (self.ID, time_int, d) ).astype('int16')
-            self.sock.send(dat)
-            count +=1
+            d_fft = np.fft.rfft(d)
+            to_send = np.hstack( (self.ID, time_int, np.real(d_fft), np.imag(d_fft)) )
+            # build the byte string to send:
+            s = struct.pack('>{}i'.format(1028), *to_send)
+            self.sock.send(s)
+            self.count +=1
 
             t_now = time()
             if t_now-t_prev > 1.:
                 print 'running for {} seconds'.format( int(t_now-t_start) )
-                print '  sent {} packets'.format(count)
+                print '  sent {} packets'.format(self.count)
                 t_prev = t_now
 
 if __name__ == '__main__':
