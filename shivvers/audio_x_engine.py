@@ -107,7 +107,6 @@ class correlator():
                 # build the plot for the first time
                 plt.ion()
                 fig = plt.figure()
-                ax1 = plt.subplot(1,1,1)
                 # get the two aligned signals
                 while True:
                     try:
@@ -125,14 +124,29 @@ class correlator():
                 #  time-aligned packets
                 fft1 = pack1[:len(pack1)/2] + 1j*pack1[len(pack1)/2:]
                 fft2 = pack2[:len(pack2)/2] + 1j*pack2[len(pack2)/2:]
-                vis = (fft1*fft2)[:-1]
-                line1, = ax1.semilogy( freq, abs(np.real(vis)), c='b', label='real')
-                line2, = ax1.semilogy( freq, abs(np.imag(vis)), c='g', label='imag')
+                vis = (fft1*fft2)
+
+                ax1 = plt.subplot(2,1,1)
+                # discard the last point of the vis, to make the plot prettier
+                line1, = ax1.semilogy( freq, abs(np.real(vis[:-1])), c='b', label='real')
+                line2, = ax1.semilogy( freq, abs(np.imag(vis)[:-1]), c='g', label='imag')
                 
                 ax1.set_xlabel('Hz')
                 ax1.set_ylabel('visibility')
                 plt.legend(loc=1)
-                plt.ax1is( [0, 25000, 1e0, 1e10] )
+                plt.axis( [0, 25000, 1e0, 1e10] )
+                
+                # plot the delay image as derived from the visibility
+                #  as a function of time delay, but with arbitrary x-axis for now
+                fft_back = np.fft.fft(vis)
+                # reshape to get clear plot
+                y = np.concatenate( (fft_back[len(fft_back)/2:], fft_back[:len(fft_back)/2]) )
+                ax2 = plt.subplot(2,1,2)
+                line3, = ax2.semilogy( (abs(y))**2, c='k')
+                ax2.set_ylabel('power')
+                ax2.set_xlabel('distance')
+                plt.axis( [0, 600, 1e8, 1e20])
+
             else:
                 # from here on out, only update the lines
                 while True:
@@ -143,10 +157,12 @@ class correlator():
                         print 'could not align packages! trying again!'
                 fft1 = pack1[:len(pack1)/2] + 1j*pack1[len(pack1)/2:]
                 fft2 = pack2[:len(pack2)/2] + 1j*pack2[len(pack2)/2:]
-                vis = (fft1*fft2)[:-1]
-                line1.set_ydata( abs(np.real(vis)) )
-                line2.set_ydata( abs(np.imag(vis)) )
-                
+                vis = (fft1*fft2)
+                line1.set_ydata( abs(np.real(vis[:-1])) )
+                line2.set_ydata( abs(np.imag(vis)[:-1]) )
+                fft_back = np.fft.fft(vis)
+                y = np.concatenate( (fft_back[len(fft_back)/2:], fft_back[:len(fft_back)/2]) )
+                line3.set_ydata( (abs(y))**2 )
                 # update the figure
                 plt.draw()
 
