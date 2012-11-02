@@ -45,36 +45,32 @@ uvdatamat = np.array(uvdata)
 x = umat.max()-umat.min()
 y = vmat.max()-vmat.min()
 #determine the resolution of the grid
-delta = 2
+delta = 1
 #generate an empty grid
 complexgrid = np.zeros([np.ceil(x/delta),np.ceil(y/delta)],dtype=uvdatamat.dtype)
-emptygrid = np.zeros([np.ceil(x/delta),np.ceil(y/delta)])
+numpoints = np.zeros([np.ceil(x/delta),np.ceil(y/delta)])
 
 #put data into the empty grid
 for i in range(uvdatamat.size):
-    xcoord = np.floor((umat[i]-umat.min())/delta)
-    ycoord = np.floor((vmat[i]-vmat.min())/delta)
-    #print xcoord, ycoord, uvdatamat[i]
-    if complexgrid[xcoord,ycoord] == 0:
+    xcoord = np.floor((umat[i])/delta)
+    ycoord = np.floor((vmat[i])/delta)
+    if numpoints[xcoord,ycoord] == 0:
         complexgrid[xcoord,ycoord] = uvdatamat[i]
-        emptygrid[xcoord,ycoord] = 1
-    #else:
-    #    print 'oversampled'
+        complexgrid[-xcoord,-ycoord] = np.conjugate(uvdatamat[i])
+    #take the average when a pixel is oversampled
+    else:
+        (complexgrid[xcoord,ycoord]*numpoints[xcoord,ycoord]+uvdatamat[i])/(numpoints[xcoord,ycoord]+1)
+        (complexgrid[-xcoord,-ycoord]*numpoints[-xcoord,-ycoord]+np.conjugate(uvdatamat[i]))/(numpoints[-xcoord,-ycoord]+1)
+    numpoints[xcoord,ycoord]+=1
+    numpoints[-xcoord,-ycoord]+=1
 
-#imgplot = plt.imshow(abs(complexgrid))
-#imgplot.set_cmap('hot')
-#plt.show()
-#imgplot = plt.imshow(emptygrid)
-#plt.show()
-#deconvolvedgrid = scipy.signal.convolve2d(complexgrid, emptygrid)
-#plt.imshow(deconvolvedgrid)
+#plot the uv plane
+#plt.imshow(abs(complexgrid))
 
-# invert the grid
-#inverteddata = np.fft.ifft2(complexgrid)
-#plt.imshow(abs(invertedgrid))
-#plt.show()
-
-        
+#plot the image
+imagegrid = np.fft.ifftshift(np.fft.ifft2(complexgrid))
+plt.imshow(abs(imagegrid))
+plt.show()
         
         
 

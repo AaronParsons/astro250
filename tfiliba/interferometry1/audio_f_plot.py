@@ -15,6 +15,7 @@ plt.ion()
 audio_fig = plt.figure()
 time_plot = audio_fig.add_subplot(121)
 spec_plot = audio_fig.add_subplot(122)
+#spec_plot.set_yscale('log')
 
 timeline, = time_plot.plot(d)
 specline, = spec_plot.plot(d_spec)
