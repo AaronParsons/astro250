@@ -98,7 +98,7 @@ reads new data from the BRAM and transmits it via UDP packets to a host computer
 \item you'll want to use the python module socket.  Some useful snippets:
 \begin{verbatim}
 >>> import socket
->>> sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+>>> sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 >>> sock.connect((host,port))
 >>> sock.send(data)
 ...
@@ -127,6 +127,7 @@ plots them.  Some useful snippets:
 >>> stream = p.open(format=fmt, channels=1, rate=44100, output=True)
 >>> stream.write(data)
 \end{verbatim}
+In order to get pyaudio to install on a mac, you should look at \url{http://stackoverflow.com/questions/9634478/unable-to-install-pyaudio-on-osx-lion}.
 Note that 44100 Hz, the typical rate for audio recordings, may not apply here.
 \item we are writing real/imag data into the BRAM.  You'll either need to up-convert, or choose your LO
 frequency carefully in order to be able to convert a complex stream to a real signal you can output to a speaker.

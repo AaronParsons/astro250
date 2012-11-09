@@ -1,0 +1,95 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Interferometry Lab 2}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item Measurement Equation
+\item Synthesis Imaging
+\item Earth Rotation Synthesis
+\item Deconvolution
+\item Radiometer Equation Applied to Interferometers
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item laptop computer
+\item Astronomical Interferometry in PYthon (AIPY)
+\item data
+\end{itemize}
+
+\section*{Stuff}
+
+Today we're going to do synthesis imaging from (more or less) scratch.  The challenge is
+that I hand you a UV dataset, and you make the picture.  Here's what you need.
+
+\subsection*{AIPY}
+
+AIPY is a package I wrote to do synthesis imaging in Python.  You need to install it.  Instructions are
+at \url{https://casper.berkeley.edu/astrobaki/index.php/AIPY}.  I suggest checking out the GIT AIPY repo.
+
+\subsection*{MIRIAD UV Files}
+
+The data I'm giving you is in the MIRIAD UV format.  AIPY has wrappers (aipy.miriad) for interacting with
+these files.  For a reference, check out \S3.2 in \url{http://setiathome.berkeley.edu/~aparsons/aipy/aipy.pdf}.
+Basically, you open a file, and then read through the data sequentially.  Each time you read a spectrum,
+you are told which antenna pair it belongs to, what time it was observed at, and the (hopefully, but
+not always correct) $uv$ coordinates of the baseline:
+\begin{verbatim}
+>>> import aipy
+>>> uv = aipy.miriad.UV('somefile.uv')
+>>> print uv['nchan'] # number of frequency channels in each spectrum
+>>> print uv['sfreq'] # starting frequency of each spectrum in GHz
+>>> print uv['sdf'] # width of each channel in GHz
+>>> for (uvw,t,bl),data,flags in uv.all(raw=True):
+...     print uvw, t, bl, uv['pol'] # time is a Julian date
+\end{verbatim}
+
+It should be noted that the ``uvw coordinates'' returned by the UV file are not in wavelengths,
+but rather, in nanoseconds.  Nanoseconds is a weird unit, but it has the nice property that,
+when multiplied by a frequency in GHz, it gives you wavelengths.
+
+
+\section{Construct a UV Grid}
+
+\begin{itemize}
+\item Construct a 2D matrix into which you will put the uv samples from the miriad file.  You'll have to
+decide on the breadth and resolution of the matrix, and the decisions you make will have reprocussions on
+the width and resolution of your image.  You may need to have a look through your UV file to see what
+the maximum baseline length is.
+\item Just looking forward a bit, you'll want to construct a class for your UV plane that includes
+various methods for putting uv samples in, and keeping track of both your UV plane and your sampling weights.
+\end{itemize}
+
+\section{Grid the Data and Make and Image}
+
+\begin{itemize}
+\item Add in the samples from the UV plane from the Miriad data file.  You might want to look forward and
+create some capability for rounding (or convolving) your samples down to the grid indices.  Remember to
+add in the Hermitian conjugate data points.
+\item Invert the UV matrix and the sampling matrix to make images of your sky and you dirty beam.
+\item What are the coordinates of your image pixels?
+\end{itemize}
+
+\section{Re-Point}
+
+\begin{itemize}
+\item The data set you were handed was very friendly, in that it was pre-phased (with correctly
+calculated $uv$ coordinates) to zenith.  Write some code that changes the phase center and generates
+new $uv$ coordinates relative to that position.  (You can calculate the new $uv$ coordinates relative
+to the old ones).
+\item Apply the phasing that re-points the data in the file to the new phase center.
+\item Grid the data at the new $uv$ coordinates
+\item verify that the new image is a translation of the old image.
+\end{itemize}
+
+\end{document}

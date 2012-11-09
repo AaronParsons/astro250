@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Antenna Lab 1}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item Reciprocity Theorem
+\item Dipole Antennas
+\item Impedance of Free Space
+\item Radiometer Equation Applied to Telescopes
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item wood, wire, rope, saw, hammer, and other implements of destruction
+\item function generator
+\item oscilloscope
+\item commercial FM antenna
+\item cable of known impedance (say, 50$\Omega$)
+\item transformer
+\end{itemize}
+
+%\section*{Some Thoughts}
+
+\section{Building an Antenna}
+\begin{itemize}
+\item construct dipole arms out of wire, tuned to 137 MHz.  We'll be using these in future 
+labs, so make them robust!
+\item construct a structure for holding the dipoles in the desired configuration (including height above the
+ground).
+\item attach dipole arms to the structure
+\item connectorize your dipole so you can drive it (yes, we are talking transmission) differentially with 
+a signal over the cable of known impedance.
+One way is to assign ground to one of the dipole arms, which makes it easy to construct for the purpose of this
+lab.  However, since ground is tied (at some level) to the earth, which acts as a reflector in your dipole
+antenna, this isn't ideal: from the earth perspective, only one arm of your dipole will be transmitting.  You'll
+have a monopole.  Better is to turn a single-ended signal from your source into a differential signal via
+a transformer, or as it is sometimes called, a ``balun''.
+\end{itemize}
+
+\section{Measuring the Impedance of Several Antennas}
+
+\begin{itemize}
+\item first, properly terminate the end of the cable you wish to use to drive a signal into your dipole, drive
+the cable at one end with your function generator, and
+then observe the signal amplitude (at the same end, as when we were measuring the impedance of a transmission line)
+as a function of frequency via a scope.  Hopefully, the signal amplitude should 
+be relatively constant.
+\item next, connect the cable to your dipole, and then measure as a function of frequency the signal amplitude.
+From this, you should be able to characterize $\Gamma$ for the cable-dipole interface, and thereby determine
+versus frequency, the impedance of your dipole.  Graph this.  By the reciprocity theorem, this graph should tell
+you how sensitive your dipole will be as a function of frequency.  Sweet.
+\item Measure the VSWR of your antenna from 100-200 MHz.
+\end{itemize}
+
+\section{Calculate Signal Gain for Satellite Observations}
+\begin{itemize}
+\item suppose Orbcomm satellites in Low Earth Orbit (LEO) transmit 3W in a 50 kHz band centered at 137 MHz.  Let's
+also assume that the sky is at a constant temperature of 300K, as are all receiver electronics.  For a 100 MHz
+input bandwidth, how much 
+amplification will you need in order to produce a signal amplitude that can be effectively sampled (but not
+clipped) by
+a CASPER Quad-ADC.  These ADC's are 8-bit and have an input voltage range of $\pm$1 V, with 50$\Omega$ termination. 
+Assume that the Orbcomm satellites' have a beam about 30$^\circ$ across.
+\item in the Orbcomm transmission band, what are the relative amplitudes of the signal and noise?  How long
+will you have to integrate to get a 10-$\sigma$ detection?
+\end{itemize}
+
+\end{document}

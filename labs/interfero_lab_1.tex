@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Interferometry Lab 1}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item Correlators
+\item Basic Interferometry
+\item Delay Imaging
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item laptop computers with microphones
+\item broad-band sound generator
+\end{itemize}
+
+\section{Build an Audio F-Engine}
+
+We are going to build a software FX correlator for audio inputs.  The first step is to build the
+F Engine which acquires the data from your computer and transmits it to a host that will perform
+the cross-multiplication.
+
+\begin{itemize}
+\item write some code (call it ``audio\_f\_plot.py'') that acquires data from your microphone and plots the
+spectrum in real time.  A useful snippet:
+\begin{verbatim}
+>>> import pyaudio as pa, numpy as n
+>>> p = pa.PyAudio()
+>>> stream = p.open(format=pa.paInt16,channels=1,rate=44100,
+...         input=True,frames_per_buffer=1024)
+>>> d = stream.read(NSAMPLES)
+>>> d = n.frombuffer(d, dtype=n.int16)
+\end{verbatim}
+\item modify your plotting code (in a new file called ``audio\_f\_engine.py'') to transmit UDP packets
+of spectrum data to a chosen port/IP address instead of plotting it.  You are going to have to define a 
+UDP packet format
+(agree on one with the whole class) that uniquely identifies streams coming from different computers, and
+also includes the time that the spectrum was taken, so that data from different computers can be aligned in
+time.  If you can create a time-stamp that is exactly equal for two packets that should be cross-multiplied
+(even if there is slight skew in exactly when each computer sampled the data), it will make your life easier
+later.  A useful snippet (repeated from digital lab 3):
+\begin{verbatim}
+>>> import socket
+>>> sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+>>> sock.connect((host,port))
+>>> sock.send(data)
+...
+>>> sock.recv(n_bytes)
+\end{verbatim}
+\item modify your plotting code (in place as ``audio\_f\_plot.py'') to instead accept data over a UDP port
+in the format you just defined, and plot it in real time.  Make sure this all still works.
+\end{itemize}
+
+\section{Build an Audio X Engine}
+
+\begin{itemize}
+\item write code (in a new file called ``audio\_x\_engine.py'') that time-aligns and cross-multiplies 
+the spectral data arriving from two different audio F engines that are both transmitting to the (one) port that
+you are listening to.  Create a real-time plot that shows both the auto- and cross-correlation spectra 
+(i.e. the visibility).  For cross-correlations, there is important information in both the amplitudes and
+phases of the visibilities.
+\item use separate threads for receiving UDP data and plotting it.  A useful snippet:
+\begin{verbatim}
+>>> import threading
+>>> class YourThread(threading.Thread):
+...     def run(self):
+            # do something
+>>> t = YourThread()
+>>> t.start()
+\end{verbatim}
+\end{itemize}
+
+\section{Make a Delay Imager}
+
+\begin{itemize}
+\item modify your X engine code (in place) to also take the delay transform of your cross-correlation, producing
+a delay ``image'' in real time.
+\item think about your units, so that you can plot your delay image in physical (spatial/time) units.
+\item If you have time, see if you can get your F engines to get better time synchronization, which will
+make your delay plot more physically representative.  What do you think is the limiting factor in synchronization?
+\end{itemize}
+
+\end{document}
