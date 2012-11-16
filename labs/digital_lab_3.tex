@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Digital Lab 3}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item FIR Filters
+\item Fast Fourier Transform
+\item Network Programming
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item ROACH board
+\item quad-ADC board
+\item 200 MHz clock source
+\item tone generator with AM/FM modulation
+\end{itemize}
+
+\section*{Some Thoughts}
+
+\subsection*{Simulink}
+
+\subsubsection*{Setting up a VNC Session}
+
+From any *nix computer:
+\begin{verbatim}
+ssh -Y gbower@otto.eecs.berkeley.edu
+$ ssh username@host.computer.edu
+    (enter password)
+$ vncserver
+    (write down XX of "desktop is host.computer.edu:XX)
+$ exit
+\end{verbatim}
+This will set up a VNC session for you to log into in the future.  Remember
+your session number (XX).
+
+When you are done with your session, it would be neighborly of you to free up the computer resources associated with your vnc session:
+\begin{verbatim}
+$ ssh username@host.computer.edu
+$ vncserver -kill :XX
+    (where XX is your VNC session from above)
+$ exit
+\end{verbatim}
+Thanks!
+
+\subsubsection*{Accessing Your VNC Session}
+
+From any *nix computer:
+\begin{verbatim}
+$ vncviewer -via username@host.computer.edu localhost:XX
+    (ssh password)
+    (vnc password)
+\end{verbatim}
+
+All future commands are to be typed inside your VNC session.
+
+%\subsection{About Simulink on Linux}
+%
+%The machine you are logged into is running a Linux desktop.
+%It behaves somewhat differently than other desktop environments you may be
+%used to.  Because Simulink sometimes opens windows that are larger than
+%the size of the desktop, it may be useful to know that you can move these
+%windows around by right-clicking, selecting "Move", and then dragging the window around.
+
+\subsubsection*{Starting Matlab/Simulink}
+
+To start Matlab/Simulink, type:
+
+\begin{verbatim}
+$ cd ~/mlib_devel
+$ ./simmy_hitz
+\end{verbatim}
+
+This program is a script that sets up the licenses for all the tools we'll be
+using, and then executes the program ``matlab''.  All further commands will be in
+the matlab window, unless we say otherwise.
+
+\section{Transmitting Data to a Host Computer via UDP}
+
+We'll be starting with the BOF file from last week: the down-converter.
+
+\begin{itemize}
+\item starting from the automated data collection script that you wrote last week, add code (call it
+``fir\_filter\_udp\_tx.py'') that continuously
+reads new data from the BRAM and transmits it via UDP packets to a host computer connected to the ROACH.
+\begin{itemize}
+\item if it isn't already, I strongly recommend that you make this code object-oriented.
+\item you'll want to use the python module socket.  Some useful snippets:
+\begin{verbatim}
+>>> import socket
+>>> sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+>>> sock.connect((host,port))
+>>> sock.send(data)
+...
+>>> sock.recv(n_bytes)
+\end{verbatim}
+\item keep in mind that the ddc\_bram is continuously being written to, and ddc\_addr tells you where writing
+is happening.  Only transmit new data, so that you get a continous stream of output.
+
+\end{itemize}
+\item write code for the host computer (call it ``fir\_filter\_udp\_rx.py'') that unpacks the values and 
+plots them.  Some useful snippets:
+\begin{verbatim}
+>>> pylab.ion()
+>>> line, = pylab.plot(...)
+>>> line.set_ydata(...)
+\end{verbatim}
+\end{itemize}
+
+\section{Optional Fun: Output to Audio}
+\begin{itemize}
+\item modify your UDP receiver code to massage the UDP packets and send them to a speaker.  Some useful snippets:
+\begin{verbatim}
+>>> import pyaudio
+>>> p = pyaudio.PyAudio()
+>>> fmt = p.get_format_from_wdith(bytes_per_samp)
+>>> stream = p.open(format=fmt, channels=1, rate=44100, output=True)
+>>> stream.write(data)
+\end{verbatim}
+In order to get pyaudio to install on a mac, you should look at \url{http://stackoverflow.com/questions/9634478/unable-to-install-pyaudio-on-osx-lion}.
+Note that 44100 Hz, the typical rate for audio recordings, may not apply here.
+\item we are writing real/imag data into the BRAM.  You'll either need to up-convert, or choose your LO
+frequency carefully in order to be able to convert a complex stream to a real signal you can output to a speaker.
+\end{itemize}
+
+\section{Program an FIR Filter for FM to AM Conversion}
+
+\begin{itemize}
+\item begin with the file \url{~/aparsons/firfilter.mdl}
+\item after the summing filter, a 4-tap (complex) FIR filter has been added with coefficients that 
+are programmable from software registers.  You'll need to pick coefficients, and read the design to understand
+what they mean.  Some keep in mind that the FIR filter operates on
+the output of the accumulator that implements the summing
+filter, which only outputs valid data every 1024$^{\rm th}$ sample.
+\item first, program the FIR filter for unity gain to reproduce the output of the DDC.  Verify that this works.
+\item next, choose a set of coefficients (and predict the filter response) to linearly convert frequency to
+amplitude, ranging from 0 at negative frequencies to 1 at positive frequencies.
+\item compare the predicted and measured response of the entire summing-filter/FIR-filter system.  
+\item write a program ``fir\_filter\_response.py'' that illustrates all of these predictions, and, if you have
+time, your measurements.
+\item if you have the time, you could combine this output with the audio script to listen to FM radio
+streaming over the internet from an FPGA-based tuner.  Cool.
+\end{itemize}
+
+\end{document}

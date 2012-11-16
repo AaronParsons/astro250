@@ -10,13 +10,16 @@ import matplotlib.pyplot as plt
 # open files as signed 32-bit integers
 bram_str = open('bram_files/data_bram_10MHz','r').read()
 n_samps = len(bram_str)/4
-data10 = struct.unpack('>{}i'.format(n_samps), bram_str)
+#data10 = struct.unpack('>{}i'.format(n_samps), bram_str)
+data10 = struct.unpack('>%di' % n_samps, bram_str)
 
 bram_str = open('bram_files/data_bram_90MHz','r').read()
-data90 = struct.unpack('>{}i'.format(n_samps), bram_str)
+#data90 = struct.unpack('>{}i'.format(n_samps), bram_str)
+data90 = struct.unpack('>%di' % n_samps, bram_str)
 
 bram_str = open('bram_files/data_bram_110MHz','r').read()
-data110 = struct.unpack('>{}i'.format(n_samps), bram_str)
+#data110 = struct.unpack('>{}i'.format(n_samps), bram_str)
+data110 = struct.unpack('>%di' % n_samps, bram_str)
 
 # clock is 200MHz, so each time step is 5 nanoseconds
 x = np.linspace(0., 5e-6 * len(data10), len(data10)) #in seconds
