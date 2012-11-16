@@ -25,14 +25,10 @@ v = []
 uvdata = []
 #grid = np.zeros([x/delta,y/delta])
 for (uvw,t,bl),data,flags in uv.all(raw=True):
-    #uvw*uv['sfreq'] #change coordiate to wavelengths
-    #print uvw
-    u.append(uvw[0]*uv['sfreq'])
-    v.append(uvw[1]*uv['sfreq'])
-    uvdata.append(data[0])
-    #print uvw[0],uvw[1]
-    #for freq in range(uv['nchan']):   
-    #    print uvw, t, bl, uv['pol'], data
+    for i in range(uv['nchan']):
+        u.append(uvw[0]*(uv['sfreq']+i*uv['sdf']))
+        v.append(uvw[1]*(uv['sfreq']+i*uv['sdf']))
+        uvdata.append(data[i])
 
 umat = np.array(u)
 vmat = np.array(v)
@@ -42,8 +38,10 @@ uvdatamat = np.array(uvdata)
 
 #grid the data
 #determine the size of the grid
-x = umat.max()-umat.min()
-y = vmat.max()-vmat.min()
+#x = umat.max()-umat.min()
+#y = vmat.max()-vmat.min()
+x = 2*umat.max()
+y = 2*vmat.max()
 #determine the resolution of the grid
 delta = 1
 #generate an empty grid
@@ -65,7 +63,8 @@ for i in range(uvdatamat.size):
     numpoints[-xcoord,-ycoord]+=1
 
 #plot the uv plane
-#plt.imshow(abs(complexgrid))
+plt.imshow(abs(complexgrid))
+plt.show()
 
 #plot the image
 imagegrid = np.fft.ifftshift(np.fft.ifft2(complexgrid))

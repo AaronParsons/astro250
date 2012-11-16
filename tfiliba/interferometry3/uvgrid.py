@@ -50,8 +50,8 @@ class UVGrid():
                     #take the average when a pixel is oversampled
                     self.complexgrid[currentxcoord,currentycoord] += weight*self.uvdatamat[i].data
                     self.complexgrid[-currentxcoord,-currentycoord] += weight*np.conjugate(self.uvdatamat[i].data)
-                    self.samplinggrid[currentxcoord,currentycoord]+=weight
-                    self.samplinggrid[-currentxcoord,-currentycoord]+=weight
+                    self.samplinggrid[currentxcoord,currentycoord] += weight
+                    self.samplinggrid[-currentxcoord,-currentycoord] += weight
                     
     def plotdirtybeam(self):
         dirtybeam = np.fft.ifftshift(np.fft.ifft2(self.samplinggrid))
@@ -68,9 +68,8 @@ class UVGrid():
         plt.imshow(abs(dirtyimage))
         plt.show()
         
-    def plotdeconvolvedimage(self):
-        dirtyimage = np.fft.ifftshift(np.fft.ifft2(self.complexgrid))
-        dirtybeam = np.fft.ifftshift(np.fft.ifft2(self.samplinggrid))
-        plt.imshow(abs(dirtyimage/dirtybeam))
-        plt.show()
+        
+        
+
+        
     
