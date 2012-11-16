@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Radio Skillz: Interferometry Lab 3}
+
+\maketitle
+
+\section*{Prerequisites}
+
+\begin{itemize}
+\item Self Calibration
+\item Phase Calibration
+\item Flux Calibration
+\item Gridding
+\item W Projection
+\end{itemize}
+
+\section*{Materials}
+
+\begin{itemize}
+\item laptop computer
+\item Astronomical Interferometry in PYthon (AIPY)
+\item data
+\end{itemize}
+
+\section*{Stuff}
+
+Last time, you constructed a uv grid for synthesis imaging, using simplistic (round to nearest) gridding.
+Today we're going to up our gridding game.  As before, the challenge is
+that I hand you a UV dataset, and you make the picture.  You'll need AIPY and your previous code.
+The data I'm giving you is still in the MIRIAD UV format, and as before,
+the ``uvw coordinates'' returned by the UV file are not in wavelengths,
+but nanoseconds.
+
+\section{Add a Gridding Function to Your UV Grid}
+
+\begin{itemize}
+\item Currently, to grid, you are rounding to the nearest pixel.  You should change your code (by
+sub-classing your UV Grid) to divide each visibility sample among some number of pixels (the ``footprint''
+of you gridder).  I suggest the nearest 4 or 9.  Allow for an arbitrary function to be passed in
+that is evaluated based on the actual uv coordinates of your sample to choose the weights for gridding
+your sample in the UV plane.  Don't forget to put those same weights in your sampling grid, which
+you use to determine your dirty beam.
+\item Select a gridding function and image the data set from last time.  Compare the result with
+your nearest-pixel gridding.  Predict numerically the effect the gridding has on your resultant image.
+\end{itemize}
+
+\section{Add W-Projection}
+
+\begin{itemize}
+\item Last time, you re-phased data that were observed with no $w$ component to point toward a new 
+phase center, effectively removing the projected $w$ component
+of each baseline relative to a region near phase center.  Now, you are going to be handed a dataset where
+visibilities were fundamentally observed with different (and incompatible) $w$ components, such that
+phasing is absolutely necessary.  As a first step, phase this data toward zenith and use standard gridding.
+This is very wide-field data, so set the resolution of your UV grid to image the whole sky.
+\item Inspect the resultant image, identifying sources with increasing distance from zenith.  Do you
+see the widefield effects of the $w$ component?
+\item Now incorporate $w$ projection.  This can be rather difficult to do efficiently, so we'll do it inefficiently instead.  Instead of putting $w$ projection in the analytic gridding you use above, generate an image-domain
+picture of the phase errors introduced by the $w$ component.  Conjugate this (to ``undo'' the error), and 
+then take the Fourier transform.  This is,
+numerically, the $w$ kernel that should be used to grid your visibilities.  It depends on the $w$ of each baseline.
+Convolve each (separately) gridded visibility by the appropriate $w$ component.  Don't forget to put all of this
+in the sample grid as well.
+\item Now image using $w$ projection.  Hopefully, you'll see a huge difference, both in how far out point
+sources can be identified, and in a firmly defined horizon line.
+\end{itemize}
+
+\end{document}
