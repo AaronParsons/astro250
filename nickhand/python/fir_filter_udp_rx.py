@@ -28,8 +28,8 @@ class receiveUDP(object):
         self.dt              = timestep # the timestep of the samples
         self.dtype           = dtype    # the type of data ('ddc' or 'data')
         self.max_recvd_bytes = 2**15    # the maximum bytes to receive per packets
-        self.max_to_plot     = 1024     # number of samples to show in plot
-        
+        self.max_to_plot     = 1024      # number of samples to show in plot
+        self.show            = 100
 
     def start(self):
         """
@@ -165,7 +165,7 @@ class receiveUDP(object):
         
         time_ax.set_xlabel(r'time ($\mu$s)', fontsize=16)
         time_ax.set_ylabel('signal amplitude', fontsize=16)
-        time_ax.set_xlim(0, self.dt*self.max_to_plot*1e6)
+        time_ax.set_xlim(0, self.dt*self.show*1e6)
         
         # draw and then we are finished
         pl.draw()

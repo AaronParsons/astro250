@@ -25,8 +25,30 @@ class ROACHInterface(object):
        self.ddc_addr  = self.path + 'ddc_addr'
        self.lo_path   = self.path + 'freq' 
        self.trig_path = self.path + 'trig'
+       self.coeff_path = self.path + 'FIR_filter_coeff%d'
      
+    def set_coeffs(self, coeffs, binpt=8):
+        assert(len(coeffs)==4)
+        
+        for i, c in enumerate(coeffs):
+            cr = int(c.real * 2**binpt)
+            ci = int(c.imag * 2**binpt)
+            
+            c = struct.pack('2h', cr, ci)
+
+            self.write_coeff(i, c)
+       
+        return 
+            
+    def write_coeff(self, num, val):
+
+        f = open(self.coeff_path % num, 'w')
+        f.write(val)
+        f.close()
      
+        
+        return 
+        
     def set_lof(self, f_MHz, clk_MHz=200., freq_bits=10):
         """
         @brief set the local oscillator frequency (LOF), which
@@ -64,6 +86,7 @@ class ROACHInterface(object):
         data = f.read()
         f.close()
 
+        
         return data
 
   
@@ -73,7 +96,7 @@ class transmitUDP(object):
     to a client via User Datagram Protocol (UDP)
     """
     
-    def __init__(self, pid, host='192.168.1.101', port=12345):
+    def __init__(self, pid, host='192.168.1.101', port=12345, coeffs=[0, 0, 0, 0]):
         """
         @brief initialize the class, given a process ID, host and port
         
@@ -83,6 +106,8 @@ class transmitUDP(object):
         """
         
         self.ri = ROACHInterface(pid)
+        self.ri.set_coeffs(coeffs)
+        
         self.host = host
         self.port = port
            
@@ -160,7 +185,7 @@ class transmitUDP(object):
                 f_addr.seek(0)
                 
                 # unpack the new address, which is a 4 byte unsigned int
-                new_addr = struct.unpack('>i', new_addr)[0]
+                new_addr = struct.unpack('>I', new_addr)[0]
                 
                 # check if there is overfill back to address 0
                 if new_addr > old_addr:
@@ -203,11 +228,11 @@ if __name__ == '__main__':
     o.add_option('-q', '--host', type='str', dest='host',default='192.168.1.100', help='ip address')
     o.add_option('-i', '--input', dest='get_input', action='store_true', default=False, help='transmit input signal')
     o.add_option('-w', '--wordlength', dest='wordlength', type='int', default=4, help='bytes per value')
-
+    o.add_option('-c', '--coeffs', dest='coeffs', type='complex', nargs=4)
     opts,args = o.parse_args(sys.argv[1:])
-    
+
     # initialize the transmitUDP class
-    t = transmitUDP(int(args[0]), host=opts.host, port=opts.port)
+    t = transmitUDP(int(args[0]), host=opts.host, port=opts.port, coeffs=opts.coeffs)
     
     # transmit input signal or DDC signal depending on optional arguments
     if opts.get_input:
