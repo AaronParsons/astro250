@@ -46,13 +46,14 @@ def process_ddc_bram(filename, timestep = 5e-9, data=None):
     
     # unpack the binary data, in 2 byte packets 
     data = struct.unpack('>%dh' %N_samps, data)
-    
+
     # the corresponding times for each sample
     times = np.arange(0, N_samps*timestep/2., timestep )
 
     # get the sin/cos components of the read values
     sin = np.array(data[0::2])
     cos = np.array(data[1::2])
+
     data = cos + 1j*sin
     
     return times, data
