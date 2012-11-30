@@ -68,7 +68,7 @@ def test_CLT(Ns, host_dist, scale=0., loc=1., interactive=True):
     ax1.set_ylabel("probability density", fontsize=16)
     ax1.set_title('CLT for sample size N=%d, drawn from %s distribution' %(Ns[-1], host_dist.name))
     
-    # overlay a normal distribution with mu = 1.0 and sigma = 1.0 / sqrt(N)
+    # overlay a normal distribution with mu = 1.0 and sigma = 10.0 / sqrt(N)
     x = np.linspace(np.amin(sample_avgs), np.amax(sample_avgs), 1000)
     
     # get the mean and std dev of host distribution
