@@ -24,6 +24,8 @@ class UVGridGaussian(UVGrid.UVGrid):
         # the footprint size when doing gaussian gridding
         self.N_footprint = np.round(np.sqrt(self.nearestPixels))
         
+        # ARP: isn't this variable already stored in UVGrid?  You don't need to do it again here.
+
         # whether to use w projection
         self.dowproj = wproj
         
@@ -60,6 +62,9 @@ class UVGridGaussian(UVGrid.UVGrid):
         and return a list of pixels, with corresponding arrays of samples, 
         ws and i0, j0 (of correct size)
         """
+        # ARP: I find most of the code very readable, but this function is an exception.  Very dense
+        # and opaque to a reader.  Part of it may be that the variable names are as descriptive
+        # of what you are doing as they could be.
 
         # initialize lists to return
         out_i, out_j = [], []

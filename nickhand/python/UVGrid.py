@@ -97,6 +97,9 @@ class UVGrid(object):
     """
     
     def __init__(self, size, resolution, wproj=True, wres=0.5):
+        # ARP: I think that you should have made wproj a separate class that inherits from UVGrid.
+        # Inheritance is a good way to package functionality such that someone who doesn't want
+        # w projection doesn't have to see it (or even know about it).
         """
         @brief initialize the class
         
@@ -121,6 +124,11 @@ class UVGrid(object):
         # save the w-projection resolution
         self.wres = wres
         
+        # ARP: I'm not sure where I stand on this issue, but... here you make L,M, which
+        # are used only once in this code.  You might consider only creating these variables
+        # when you need them (and allowing them to disappear when you are done) to
+        # lower the memory footprint of your code.
+
         # compute the l and m sky values corresponding to the UV plane
         self.l, self.m = self.compute_lm()
     
@@ -154,6 +162,14 @@ class UVGrid(object):
         """
         @brief plot and show the UV plane
         """
+        # ARP: Something you'll have to worry about if you ever start managing software projects for
+        # others is dependencies.  Here you have a routine that relies on pylab/matplotlib, but is
+        # peripheral to the core functionality.  This means that, if you are trying to install this code
+        # you will have to install matplotlib, even if you don't want to make plots.  At the least, it
+        # would be better on have this routine import pylab inside of the function, so the rest can
+        # run even if pylab is not installed.  At best, you might limit code that uses pylab to the
+        # command-line invocation at the end of this file.
+
         # the dimension and resolution of the UV plane
         dim = self.shape[0] 
         res = self.resolution
@@ -192,6 +208,9 @@ class UVGrid(object):
         @param j: pixel column values (float or np.array)
         """
 
+        # ARP: something you might think about is making it clear to the user that you are
+        # adding in the hermitian conjugate data automatically, either via comments or a parameter
+        # that turns it on/off.
         try:
             # add the weights to the pixels (i,j)
             self.weights[i, j] += weight
@@ -213,6 +232,11 @@ class UVGrid(object):
         @param j: pixel column values (float or np.array)
         """
         
+        # ARP: this is a subtle issue, but you use this routine with i,j being vectors.
+        # It turns out that if there is a repeated entry in theses (i=[1,1], j=[3,3]),
+        # the += notation you use breaks.  This is because the withdrawl of data, the adding,
+        # and the re-insertion of the data are done as vector operations, so, when reinserting
+        # if two entries hit the the same index, they overwrite each other instead of adding.
         try:
 
              # add the samples to pixels (i, j)
